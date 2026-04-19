@@ -1,25 +1,42 @@
 import { useEffect, useState } from "react";
 import { getPopularMovies } from "../services/moviesService";
 import type { Movie } from "../types/movie";
-import MovieCard from "../components/MovieCard";
+import MovieList from "../components/MovieList";
 
-export default function HomePage() {
+export default function Home() {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPopularMovies().then((data) => {
-      setMovies(data.results);
-    });
+    async function fetchMovies() {
+      try {
+        const data = await getPopularMovies();
+        setMovies(data.results);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchMovies();
   }, []);
 
+  if (loading) {
+    return (
+      <p className="text-center mt-10">
+        Loading movies...
+      </p>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {movies.map((movie) => (
-        <MovieCard
-          key={movie.id}
-          movie={movie}
-        />
-      ))}
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">
+        Popular Movies
+      </h1>
+
+      <MovieList movies={movies} />
     </div>
   );
 }
