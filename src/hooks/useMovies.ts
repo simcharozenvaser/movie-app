@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { getPopularMovies } from "../services/moviesService";
 import type { Movie } from "../types/movie";
-import MovieList from "../components/MovieList";
 
-export default function Home() {
+export function useMovies() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchMovies() {
       try {
+        setLoading(true);
+
         const data = await getPopularMovies();
         setMovies(data.results);
-      } catch (error) {
-        console.error(error);
+
+      } catch (err) {
+        setError("Failed to load movies");
+        console.error(err);
+
       } finally {
         setLoading(false);
       }
@@ -22,21 +27,9 @@ export default function Home() {
     fetchMovies();
   }, []);
 
-  if (loading) {
-    return (
-      <p className="text-center mt-10">
-        Loading movies...
-      </p>
-    );
-  }
-
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">
-        Popular Movies
-      </h1>
-
-      <MovieList movies={movies} />
-    </div>
-  );
+  return {
+    movies,
+    loading,
+    error,
+  };
 }

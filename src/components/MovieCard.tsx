@@ -20,16 +20,14 @@ export default function MovieCard({ movie }: MovieCardProps) {
       />
 
       <div className="p-3">
-        <h3 className="font-semibold text-lg mb-1">
-          {movie.title}
-        </h3>
+        <h3 className="font-semibold text-lg mb-1">{movie.title}</h3>
 
         <p className="text-sm text-gray-600">
           ⭐ {movie.vote_average.toFixed(1)}
         </p>
 
         <p className="text-sm text-gray-500">
-          {movie.release_date}
+          {movie.release_date?.slice(0, 4)}{" "}
         </p>
       </div>
     </div>
