@@ -1,7 +1,7 @@
 import MovieList from "../components/MovieList";
 import { useMovies } from "../hooks/useMovies";
 
-export default function Home() {
+export default function HomePage() {
   const { movies, loading, error } = useMovies();
 
   if (loading) {

@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./components/MainLayout";
-import HomePage from "./pages/Home";
-import FavoritesPage from "./pages/Favorites";
-import MovieDetailsPage from "./pages/MovieDetails";
+import HomePage from "./pages/HomePage";
+import FavoritesPage from "./pages/FavoritesPage";
+import MovieDetailsPage from "./pages/MovieDetailsPage";
 
 export default function App() {
   return (
