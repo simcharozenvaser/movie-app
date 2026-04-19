@@ -1,8 +1,11 @@
 import { apiClient } from "./apiClient";
+import type { MoviesResponse } from "../types/movie";
 
-export async function getPopularMovies() {
+export async function getPopularMovies(): Promise<MoviesResponse> {
   try {
-    const response = await apiClient.get("/movie/popular");
+    const response = await apiClient.get<MoviesResponse>(
+      "/movie/popular"
+    );
 
     return response.data;
   } catch (error) {
