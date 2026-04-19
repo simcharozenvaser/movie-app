@@ -1,33 +1,15 @@
-import { useEffect, useState } from "react";
-import { getPopularMovies } from "../services/moviesService";
-import type { Movie } from "../types/movie";
 import MovieList from "../components/MovieList";
+import { useMovies } from "../hooks/useMovies";
 
 export default function Home() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchMovies() {
-      try {
-        const data = await getPopularMovies();
-        setMovies(data.results);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchMovies();
-  }, []);
+  const { movies, loading, error } = useMovies();
 
   if (loading) {
-    return (
-      <p className="text-center mt-10">
-        Loading movies...
-      </p>
-    );
+    return <p className="text-center mt-10">Loading movies...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center mt-10 text-red-500">{error}</p>;
   }
 
   return (
