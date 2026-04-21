@@ -15,7 +15,6 @@ export default function MovieDetailsPage() {
 
         const data = await getMovieById(id);
         setMovie(data);
-
       } catch (error) {
         console.error(error);
       } finally {
@@ -26,31 +25,23 @@ export default function MovieDetailsPage() {
     fetchMovie();
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-gray-400">Loading...</p>;
   if (!movie) return <p>Movie not found</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-
-      <h1 className="text-3xl font-bold mb-4">
-        {movie.title}
-      </h1>
+    <div className="p-6 max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
 
       <img
-        className="w-full rounded mb-4"
+        className="w-full rounded-xl shadow-2xl mb-6"
         src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
       />
 
-      <p className="mb-4">{movie.overview}</p>
+      <p className="text-gray-300 mb-4 leading-relaxed">{movie.overview}</p>
 
-      <p>
-        ⭐ Rating: {movie.vote_average}
-      </p>
+      <p>⭐ Rating: {movie.vote_average}</p>
 
-      <p>
-        📅 Release: {movie.release_date}
-      </p>
-
+      <p>📅 Release: {movie.release_date}</p>
     </div>
   );
 }

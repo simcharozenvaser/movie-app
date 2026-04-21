@@ -7,24 +7,19 @@ type MovieListProps = {
   loading?: boolean;
 };
 
-export default function MovieList({
-  movies,
-  title,
-  loading,
-}: MovieListProps) {
+export default function MovieList({ movies, title, loading }: MovieListProps) {
   if (loading) {
-    return <p className="text-gray-500">Loading...</p>;
+    return <p className="text-gray-400">Loading...</p>;
   }
 
   return (
-    <section className="mb-8">
-      {title && (
-        <h2 className="text-xl font-bold mb-4">{title}</h2>
-      )}
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <section className="mb-10 px-2">
+      {title && <h2 className="text-2xl font-bold mb-3 text-white">{title}</h2>}
+      <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide items-stretch">
         {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <div key={movie.id} className="min-w-[220px]">
+            <MovieCard movie={movie} />
+          </div>
         ))}
       </div>
     </section>
