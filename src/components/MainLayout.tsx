@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom";
+import Navbar from "./Navbar";
 
 export default function MainLayout() {
   return (
     <div dir="rtl" className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
-      
-      <header className="bg-black text-white p-4">
-        <h1 className="text-xl font-bold">🎬 Movie App</h1>
-      </header>
+
+      {/* Navbar במקום header */}
+      <Navbar />
 
       <main className="flex-1 p-4 max-w-6xl mx-auto w-full">
         <Outlet />
