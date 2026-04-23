@@ -17,7 +17,7 @@ export default function MovieList({ movies, title, loading }: MovieListProps) {
       {title && <h2 className="text-2xl font-bold mb-3 text-white">{title}</h2>}
       <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide items-stretch">
         {movies.map((movie) => (
-          <div key={movie.id} className="min-w-[220px]">
+          <div key={movie.id}>
             <MovieCard movie={movie} />
           </div>
         ))}
