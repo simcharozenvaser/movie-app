@@ -1,35 +1,30 @@
 import { useEffect, useState } from "react";
-import { getPopularMovies } from "../services/moviesService";
-import type { Movie } from "../types/movie";
+import type { Movie, MoviesResponse } from "../types/movie";
 
-export function useMovies() {
+type FetchMoviesFunction = () => Promise<MoviesResponse>;
+
+export function useMovies(fetchFunction: FetchMoviesFunction) {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchMovies() {
+    async function loadMovies() {
       try {
         setLoading(true);
 
-        const data = await getPopularMovies();
+        const data = await fetchFunction();
+
         setMovies(data.results);
 
-      } catch (err) {
-        setError("Failed to load movies");
-        console.error(err);
-
+      } catch (error) {
+        console.error("Error loading movies:", error);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchMovies();
-  }, []);
+    loadMovies();
+  }, [fetchFunction]);
 
-  return {
-    movies,
-    loading,
-    error,
-  };
+  return { movies, loading };
 }
