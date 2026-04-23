@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useSearchMovies } from "../hooks/useSearchMovies";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
   const [query, setQuery] = useState("");
   const { results, search } = useSearchMovies();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isMoviePage = location.pathname.startsWith("/movie/");
 
   function handleChange(value: string) {
     setQuery(value);
@@ -27,20 +31,26 @@ export default function Navbar() {
         </div>
 
         {/* Search */}
-        <input
-          value={query}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder="Search movies..."
-          className="px-3 py-1 rounded bg-gray-800 text-white"
-        />
+        {!isMoviePage && (
+          <input
+            value={query}
+            onChange={(e) => handleChange(e.target.value)}
+            placeholder="Search movies..."
+            className="px-3 py-1 rounded bg-gray-800 text-white"
+          />
+        )}
       </nav>
 
       {/* DROPDOWN */}
-      {query && results.length > 0 && (
+      {!isMoviePage && query && results.length > 0 && (
         <div className="absolute top-14 right-6 w-96 bg-gray-900 text-white shadow-2xl rounded-lg max-h-96 overflow-y-auto z-50 border border-gray-800">
           {results.slice(0, 8).map((movie) => (
             <div
               key={movie.id}
+              onClick={() => {
+                navigate(`/movie/${movie.id}`);
+                setQuery("");
+              }}
               className="p-2 hover:bg-gray-800 cursor-pointer flex gap-2"
             >
               <img
