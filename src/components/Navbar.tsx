@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchMovies } from "../hooks/useSearchMovies";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -9,14 +9,17 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isMoviePage = location.pathname.startsWith("/movie/");
+  const isFavoritesPage = location.pathname.startsWith("/favorites");
 
-  function handleChange(value: string) {
-    setQuery(value);
+  const hideSearch = isMoviePage || isFavoritesPage;
 
-    setTimeout(() => {
-      search(value);
+  useEffect(() => {
+    const id = setTimeout(() => {
+      search(query);
     }, 300);
-  }
+
+    return () => clearTimeout(id);
+  }, [query]);
 
   return (
     <div className="relative">
@@ -31,10 +34,10 @@ export default function Navbar() {
         </div>
 
         {/* Search */}
-        {!isMoviePage && (
+        {!hideSearch && (
           <input
             value={query}
-            onChange={(e) => handleChange(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Search movies..."
             className="px-3 py-1 rounded bg-gray-800 text-white"
           />

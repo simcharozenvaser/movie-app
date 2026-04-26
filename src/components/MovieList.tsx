@@ -1,10 +1,9 @@
-import AsyncState from "./ui/AsyncState";
 import MovieCard from "./MovieCard";
 import MovieCardSkeleton from "./MovieCardSkeleton";
+import AsyncState from "./ui/AsyncState";
 import type { Movie } from "../types/movie";
 
-
-type MovieListProps = {
+type Props = {
   movies: Movie[];
   title?: string;
   loading?: boolean;
@@ -16,11 +15,12 @@ export default function MovieList({
   title,
   loading,
   error,
-}: MovieListProps) {
+}: Props) {
   return (
     <section className="mb-10 px-2">
+
       {title && (
-        <h2 className="text-2xl font-bold mb-3 text-white">
+        <h2 className="text-2xl font-bold mb-3">
           {title}
         </h2>
       )}
@@ -28,21 +28,27 @@ export default function MovieList({
       <AsyncState
         loading={loading}
         error={error}
-        isEmpty={movies.length === 0}
+        isEmpty={!loading && movies.length === 0}
         skeleton={
           <div className="flex gap-4 overflow-x-auto pb-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <MovieCardSkeleton key={i} />
-            ))}
+            {Array.from({ length: 6 }).map(
+              (_, i) => (
+                <MovieCardSkeleton key={i} />
+              )
+            )}
           </div>
         }
       >
-        <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide items-stretch">
+        <div className="flex gap-4 overflow-x-auto pb-3">
           {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+            />
           ))}
         </div>
       </AsyncState>
+
     </section>
   );
 }

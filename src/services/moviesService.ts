@@ -78,3 +78,19 @@ export async function getMovieById(id: string): Promise<Movie> {
     throw error;
   }
 }
+
+export async function getMoviesByIds(ids: number[]): Promise<Movie[]> {
+  try {
+    const requests = ids.map((id) =>
+      apiClient.get(`/movie/${id}`)
+    );
+
+    const responses = await Promise.all(requests);
+
+    return responses.map((res) => res.data);
+
+  } catch (error) {
+    console.error("Error fetching favorite movies:", error);
+    return [];
+  }
+}

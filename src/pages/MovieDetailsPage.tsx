@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getMovieById } from "../services/moviesService";
 import type { Movie } from "../types/movie";
 
+import FavoriteButton from "../components/FavoriteButton";
 import AsyncState from "../components/ui/AsyncState";
 
 export default function MovieDetailsPage() {
@@ -21,7 +22,6 @@ export default function MovieDetailsPage() {
         setError(null);
 
         const data = await getMovieById(id);
-
         setMovie(data);
 
       } catch (err) {
@@ -43,6 +43,7 @@ export default function MovieDetailsPage() {
       skeleton={
         <div className="p-6 max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row-reverse gap-8 animate-pulse">
+
             <div className="w-full max-w-sm h-[450px] bg-gray-700 rounded-xl" />
 
             <div className="flex flex-col gap-4 flex-1">
@@ -51,27 +52,49 @@ export default function MovieDetailsPage() {
               <div className="h-4 bg-gray-700 rounded w-1/3" />
               <div className="h-24 bg-gray-700 rounded w-full" />
             </div>
+
           </div>
         </div>
       }
     >
       {movie && (
         <div className="p-6 max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row-reverse gap-8">
-            {/* Poster */}
-            <img
-              className="
-                w-full
-                max-w-sm
-                rounded-xl
-                shadow-2xl
-              "
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
-            />
 
-            {/* Details */}
+          <div className="flex flex-col md:flex-row-reverse gap-8">
+
+            {/* POSTER (same pattern as MovieCard) */}
+            <div className="relative w-full max-w-sm group">
+
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                className="w-full rounded-xl shadow-2xl"
+              />
+
+              {/* overlay */}
+              <div className="
+                absolute inset-0
+                bg-black/0
+                group-hover:bg-black/30
+                transition
+                rounded-xl
+              " />
+
+              {/* FAVORITE (same UX as home cards) */}
+              <FavoriteButton
+                movieId={movie.id}
+                className="
+                  absolute top-2 right-2
+                  text-3xl
+                  opacity-0 group-hover:opacity-100
+                  transition
+                "
+              />
+            </div>
+
+            {/* DETAILS */}
             <div className="flex flex-col gap-4 text-right">
+
               <h1 className="text-3xl font-bold">
                 {movie.title}
               </h1>
@@ -87,8 +110,11 @@ export default function MovieDetailsPage() {
               <p className="text-gray-300 leading-relaxed">
                 {movie.overview}
               </p>
+
             </div>
+
           </div>
+
         </div>
       )}
     </AsyncState>
