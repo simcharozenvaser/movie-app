@@ -6,18 +6,19 @@ type FetchMoviesFunction = () => Promise<MoviesResponse>;
 export function useMovies(fetchFunction: FetchMoviesFunction) {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadMovies() {
       try {
         setLoading(true);
+        setError(null);
 
         const data = await fetchFunction();
 
         setMovies(data.results);
-
       } catch (error) {
-        console.error("Error loading movies:", error);
+        setError("Failed to load movies");
       } finally {
         setLoading(false);
       }
@@ -26,5 +27,9 @@ export function useMovies(fetchFunction: FetchMoviesFunction) {
     loadMovies();
   }, [fetchFunction]);
 
-  return { movies, loading };
+  return {
+    movies,
+    loading,
+    error,
+  };
 }

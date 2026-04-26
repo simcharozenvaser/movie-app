@@ -5,6 +5,7 @@ import { searchMovies } from "../services/moviesService";
 export function useSearchMovies() {
   const [results, setResults] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function search(query: string) {
     if (!query) {
@@ -19,7 +20,7 @@ export function useSearchMovies() {
 
       setResults(data.results);
     } catch (error) {
-      console.error(error);
+      setError("Search failed");
     } finally {
       setLoading(false);
     }
@@ -28,6 +29,7 @@ export function useSearchMovies() {
   return {
     results,
     loading,
+    error,
     search,
   };
 }

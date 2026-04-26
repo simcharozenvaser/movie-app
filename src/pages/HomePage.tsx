@@ -17,31 +17,33 @@ export default function HomePage() {
 
   return (
     <div>
+      <MovieList
+        title="Popular Movies"
+        movies={popular.movies}
+        loading={popular.loading}
+        error={popular.error}
+      />
 
       <MovieList
         title="Trending Movies"
         movies={trending.movies}
         loading={trending.loading}
+        error={trending.error}
       />
 
       <MovieList
-        title="Popular Movies"
-        movies={popular.movies}
-        loading={popular.loading}
-      />
-
-      <MovieList
-        title="Top Rated Movies"
+        title="TopRated Movies"
         movies={topRated.movies}
         loading={topRated.loading}
+        error={topRated.error}
       />
 
       <MovieList
         title="Upcoming Movies"
         movies={upcoming.movies}
         loading={upcoming.loading}
+        error={upcoming.error}
       />
-
     </div>
   );
 }
