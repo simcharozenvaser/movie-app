@@ -1,35 +1,66 @@
-import { useEffect, useState } from "react";
-import type { Movie, MoviesResponse } from "../types/movie";
+import { useEffect, useRef, useState } from "react";
+import type { Movie } from "../types/movie";
+import { getMovies } from "../services/moviesService";
 
-type FetchMoviesFunction = () => Promise<MoviesResponse>;
-
-export function useMovies(fetchFunction: FetchMoviesFunction) {
+export function useMovies(endpoint: string) {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function loadMovies() {
-      try {
-        setLoading(true);
-        setError(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-        const data = await fetchFunction();
+  const initializedRef = useRef(false);
 
-        setMovies(data.results);
-      } catch (error) {
-        setError("Failed to load movies");
-      } finally {
-        setLoading(false);
-      }
+  async function fetchPage(pageNumber: number, replace = false) {
+    try {
+      setError(null);
+
+      const data = await getMovies(endpoint, pageNumber);
+
+      setMovies((prev) => {
+        const existingIds = new Set(prev.map((m) => m.id));
+
+        const filtered = data.results.filter(
+          (m) => !existingIds.has(m.id)
+        );
+
+        return replace ? filtered : [...prev, ...filtered];
+      });
+
+      setPage(pageNumber);
+      setHasMore(pageNumber < data.total_pages);
+    } catch {
+      setError("Failed to load movies");
     }
+  }
 
-    loadMovies();
-  }, [fetchFunction]);
+  useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
+    (async () => {
+      setLoading(true);
+      await fetchPage(1, true);
+      setLoading(false);
+    })();
+  }, [endpoint]);
+
+  async function loadMore() {
+    if (!hasMore || loadingMore) return;
+
+    setLoadingMore(true);
+    await fetchPage(page + 1);
+    setLoadingMore(false);
+  }
 
   return {
     movies,
     loading,
+    loadingMore,
     error,
+    hasMore,
+    loadMore,
   };
 }

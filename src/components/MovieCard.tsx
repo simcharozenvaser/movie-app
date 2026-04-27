@@ -2,11 +2,7 @@ import { Link } from "react-router-dom";
 import type { Movie } from "../types/movie";
 import FavoriteButton from "./FavoriteButton";
 
-export default function MovieCard({
-  movie,
-}: {
-  movie: Movie;
-}) {
+export default function MovieCard({ movie }: { movie: Movie }) {
   const poster = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://via.placeholder.com/500x750";
@@ -36,12 +32,14 @@ export default function MovieCard({
         "
       />
 
-      <div className="
+      <div
+        className="
         absolute inset-0
         bg-black/0
         group-hover:bg-black/40
         transition
-      " />
+      "
+      />
 
       <FavoriteButton
         movieId={movie.id}
@@ -57,11 +55,8 @@ export default function MovieCard({
       />
 
       <div className="absolute bottom-0 p-3">
-        <p className="text-sm font-semibold line-clamp-2">
-          {movie.title}
-        </p>
+        <p className="text-sm font-semibold line-clamp-2">{movie.title}</p>
       </div>
-
     </Link>
   );
 }
