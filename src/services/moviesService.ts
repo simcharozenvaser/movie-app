@@ -1,54 +1,18 @@
 import { apiClient } from "./apiClient";
 import type { MoviesResponse, Movie } from "../types/movie";
 
-export async function getPopularMovies(): Promise<MoviesResponse> {
+export async function getMovies(
+  endpoint: string,
+  page: number = 1
+): Promise<MoviesResponse> {
   try {
-    const response = await apiClient.get<MoviesResponse>(
-      "/movie/popular"
-    );
+    const response = await apiClient.get<MoviesResponse>(endpoint, {
+      params: { page },
+    });
 
     return response.data;
   } catch (error) {
     console.error("Error fetching movies:", error);
-    throw error;
-  }
-}
-
-export async function getTrendingMovies(): Promise<MoviesResponse> {
-  try {
-    const response = await apiClient.get<MoviesResponse>(
-      "/trending/movie/week"
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching trending movies:", error);
-    throw error;
-  }
-}
-
-export async function getTopRatedMovies(): Promise<MoviesResponse> {
-  try {
-    const response = await apiClient.get<MoviesResponse>(
-      "/movie/top_rated"
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching top rated movies:", error);
-    throw error;
-  }
-}
-
-export async function getUpcomingMovies(): Promise<MoviesResponse> {
-  try {
-    const response = await apiClient.get<MoviesResponse>(
-      "/movie/upcoming"
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching upcoming movies:", error);
     throw error;
   }
 }
@@ -76,5 +40,21 @@ export async function getMovieById(id: string): Promise<Movie> {
   } catch (error) {
     console.error("Error fetching movie:", error);
     throw error;
+  }
+}
+
+export async function getMoviesByIds(ids: number[]): Promise<Movie[]> {
+  try {
+    const requests = ids.map((id) =>
+      apiClient.get(`/movie/${id}`)
+    );
+
+    const responses = await Promise.all(requests);
+
+    return responses.map((res) => res.data);
+
+  } catch (error) {
+    console.error("Error fetching favorite movies:", error);
+    return [];
   }
 }

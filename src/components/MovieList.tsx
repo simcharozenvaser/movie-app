@@ -1,27 +1,76 @@
-import type { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
+import MovieCardSkeleton from "./MovieCardSkeleton";
+import AsyncState from "./ui/AsyncState";
+import type { Movie } from "../types/movie";
 
-type MovieListProps = {
+type Props = {
   movies: Movie[];
   title?: string;
   loading?: boolean;
+  error?: string | null;
+  loadMore?: () => void;
+  loadingMore?: boolean;
+  hasMore?: boolean;
 };
 
-export default function MovieList({ movies, title, loading }: MovieListProps) {
-  if (loading) {
-    return <p className="text-gray-400">Loading...</p>;
-  }
-
+export default function MovieList({
+  movies,
+  title,
+  loading,
+  error,
+  loadMore,
+  loadingMore,
+  hasMore,
+}: Props) {
   return (
     <section className="mb-10 px-2">
-      {title && <h2 className="text-2xl font-bold mb-3 text-white">{title}</h2>}
-      <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide items-stretch">
-        {movies.map((movie) => (
-          <div key={movie.id}>
-            <MovieCard movie={movie} />
+
+      {title && (
+        <h2 className="text-2xl font-bold mb-3 text-white">
+          {title}
+        </h2>
+      )}
+
+      <AsyncState
+        loading={loading}
+        error={error}
+        isEmpty={!loading && movies.length === 0}
+        skeleton={
+          <div className="flex gap-4 overflow-x-auto pb-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <MovieCardSkeleton key={i} />
+            ))}
           </div>
-        ))}
-      </div>
+        }
+      >
+        <div className="flex gap-4 overflow-x-auto pb-3 items-center">
+
+          {movies.map((movie) => (
+            <MovieCard key={movie.id} movie={movie} />
+          ))}
+
+          {/* LOAD MORE BUTTON */}
+          {hasMore && loadMore && (
+            <button
+              onClick={loadMore}
+              disabled={loadingMore}
+              className="
+                min-w-[80px]
+                h-[120px]
+                flex items-center justify-center
+                rounded-xl
+                bg-gray-800 hover:bg-gray-700
+                text-white text-2xl
+                transition
+              "
+            >
+              {loadingMore ? "..." : "→"}
+            </button>
+          )}
+
+        </div>
+      </AsyncState>
+
     </section>
   );
 }
