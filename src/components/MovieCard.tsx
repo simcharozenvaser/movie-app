@@ -7,6 +7,11 @@ export default function MovieCard({ movie }: { movie: Movie }) {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://via.placeholder.com/500x750";
 
+  const rating =
+    movie.vote_average && movie.vote_average > 0
+      ? movie.vote_average.toFixed(1)
+      : null;
+
   return (
     <Link
       to={`/movie/${movie.id}`}
@@ -21,8 +26,10 @@ export default function MovieCard({ movie }: { movie: Movie }) {
         flex-shrink-0
       "
     >
+      {/* POSTER */}
       <img
         src={poster}
+        alt={movie.title}
         className="
           w-full
           h-full
@@ -32,15 +39,17 @@ export default function MovieCard({ movie }: { movie: Movie }) {
         "
       />
 
+      {/* HOVER OVERLAY */}
       <div
         className="
-        absolute inset-0
-        bg-black/0
-        group-hover:bg-black/40
-        transition
-      "
+          absolute inset-0
+          bg-black/0
+          group-hover:bg-black/40
+          transition
+        "
       />
 
+      {/* FAVORITE BUTTON */}
       <FavoriteButton
         movieId={movie.id}
         className="
@@ -54,8 +63,32 @@ export default function MovieCard({ movie }: { movie: Movie }) {
         "
       />
 
-      <div className="absolute bottom-0 p-3">
-        <p className="text-sm font-semibold line-clamp-2">{movie.title}</p>
+      {/* RATING BADGE */}
+      {rating && (
+        <div
+          className="
+            absolute
+            top-2
+            left-2
+            bg-black/70
+            text-yellow-400
+            text-sm
+            font-semibold
+            px-2
+            py-1
+            rounded-lg
+            backdrop-blur
+          "
+        >
+          ⭐ {rating}
+        </div>
+      )}
+
+      {/* TITLE */}
+      <div className="absolute bottom-0 p-3 w-full">
+        <p className="text-sm font-semibold line-clamp-2">
+          {movie.title}
+        </p>
       </div>
     </Link>
   );
