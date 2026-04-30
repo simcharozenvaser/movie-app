@@ -1,5 +1,4 @@
 import MovieList from "../components/MovieList";
-import { getMovies } from "../services/moviesService";
 import { useMovies } from "../hooks/useMovies";
 
 export const moviesEndpoints = {
