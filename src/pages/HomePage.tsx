@@ -1,60 +1,31 @@
+import { Link } from "react-router-dom";
 import MovieList from "../components/MovieList";
 import { useMovies } from "../hooks/useMovies";
 
-export const moviesEndpoints = {
-  popular: "/movie/popular",
-  trending: "/trending/movie/week",
-  topRated: "/movie/top_rated",
-  upcoming: "/movie/upcoming",
-};
-
 export default function HomePage() {
-  const popular = useMovies(moviesEndpoints.popular);
-  const trending = useMovies(moviesEndpoints.trending);
-  const topRated = useMovies(moviesEndpoints.topRated);
-  const upcoming = useMovies(moviesEndpoints.upcoming);
+  const popular = useMovies("/movie/popular");
+  const trending = useMovies("/trending/movie/week");
+  const topRated = useMovies("/movie/top_rated");
+  const upcoming = useMovies("/movie/upcoming");
 
   return (
     <div>
-      <MovieList
-        title="Popular Movies"
-        movies={popular.movies}
-        loading={popular.loading}
-        error={popular.error}
-        loadMore={popular.loadMore}
-        loadingMore={popular.loadingMore}
-        hasMore={popular.hasMore}
-      />
 
-      <MovieList
-        title="Trending Movies"
-        movies={trending.movies}
-        loading={trending.loading}
-        error={trending.error}
-        loadMore={trending.loadMore}
-        loadingMore={trending.loadingMore}
-        hasMore={trending.hasMore}
-      />
+      {/* 🎭 GO TO GENRES */}
+      <div className="flex justify-end mb-4">
+        <Link
+          to="/genres"
+          className="px-4 py-2 bg-blue-600 rounded text-sm hover:bg-blue-500 transition"
+        >
+          🎭 Browse by Genres
+        </Link>
+      </div>
 
-      <MovieList
-        title="TopRated Movies"
-        movies={topRated.movies}
-        loading={topRated.loading}
-        error={topRated.error}
-        loadMore={topRated.loadMore}
-        loadingMore={topRated.loadingMore}
-        hasMore={topRated.hasMore}
-      />
+      <MovieList title="Popular Movies" {...popular} />
+      <MovieList title="Trending Movies" {...trending} />
+      <MovieList title="Top Rated Movies" {...topRated} />
+      <MovieList title="Upcoming Movies" {...upcoming} />
 
-      <MovieList
-        title="Upcoming Movies"
-        movies={upcoming.movies}
-        loading={upcoming.loading}
-        error={upcoming.error}
-        loadMore={upcoming.loadMore}
-        loadingMore={upcoming.loadingMore}
-        hasMore={upcoming.hasMore}
-      />
     </div>
   );
 }

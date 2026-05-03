@@ -1,6 +1,7 @@
 import { memo, useEffect, useState } from "react";
-import { useMyList } from "../hooks/useMyList";
 import type { Movie, MyListItem } from "../types/movie";
+import { useMyList } from "../hooks/useMyList";
+import MovieCard from "./MovieCard";
 
 type Props = {
   movie: Movie;
@@ -8,11 +9,11 @@ type Props = {
 };
 
 function MyListMovieCard({ movie, item }: Props) {
-  const { updateMovie, removeMovie } = useMyList();
+  const { updateMovie } = useMyList();
 
   const [notes, setNotes] = useState("");
   const [rating, setRating] = useState(0);
-  const [hover, setHover] = useState(0);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (!item) return;
@@ -22,58 +23,53 @@ function MyListMovieCard({ movie, item }: Props) {
 
   if (!item) return null;
 
-  const saveNotes = () => {
-    updateMovie(movie.id, { myNotes: notes });
+  const save = () => {
+    updateMovie(movie.id, {
+      myNotes: notes,
+      myRating: rating || null,
+    });
+    setEditing(false);
   };
 
-  const saveRating = (val: number) => {
-    const final = val === rating ? 0 : val;
-    setRating(final);
-    updateMovie(movie.id, { myRating: final || null });
-  };
-
-  // ✅ חשוב: לא שוברים event bubbling
-  const handleRemove = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    removeMovie(movie.id);
-  };
-
-  const setStatus = (status: MyListItem["status"]) => {
-    updateMovie(movie.id, { status });
+  const cancel = () => {
+    setNotes(item.myNotes || "");
+    setEditing(false);
   };
 
   return (
-    <div className="bg-gray-900 rounded-2xl overflow-hidden border border-gray-800">
+    <div className="flex flex-col items-center">
 
-      {/* poster */}
-      <img
-        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-        className="h-[260px] w-full object-cover"
-      />
+      {/* 🎬 BASE CARD */}
+      <MovieCard movie={movie} />
 
-      <div className="p-3 flex flex-col gap-3">
+      {/* 🔽 PANEL */}
+      <div className="w-[220px] mt-2 bg-gray-900 rounded-lg p-3 flex flex-col gap-3">
 
-        <p className="font-semibold text-sm">{movie.title}</p>
+        {/* STATUS */}
+        <select
+          value={item.status}
+          onChange={(e) =>
+            updateMovie(movie.id, {
+              status: e.target.value as MyListItem["status"],
+            })
+          }
+          className="bg-black text-white text-xs p-1 rounded"
+        >
+          <option value="want_to_watch">Want to watch</option>
+          <option value="watched">Watched</option>
+        </select>
 
-        {/* TMDB + user rating */}
-        <div className="flex justify-between text-xs text-gray-400">
-          <span>TMDB ⭐ {movie.vote_average?.toFixed(1)}</span>
-          <span>Your ⭐ {rating || "-"}</span>
-        </div>
-
-        {/* ⭐ stars */}
-        <div className="flex gap-1 text-xl">
+        {/* ⭐ RATING */}
+        <div className="flex justify-center gap-1">
           {[1, 2, 3, 4, 5].map((s) => (
             <span
               key={s}
-              onMouseEnter={() => setHover(s)}
-              onMouseLeave={() => setHover(0)}
-              onClick={() => saveRating(s)}
-              className={`cursor-pointer transition ${
-                (hover || rating) >= s
-                  ? "text-yellow-400"
-                  : "text-gray-600"
+              onClick={() => {
+                setRating(s);
+                updateMovie(movie.id, { myRating: s });
+              }}
+              className={`cursor-pointer text-lg ${
+                rating >= s ? "text-yellow-400" : "text-gray-600"
               }`}
             >
               ★
@@ -81,54 +77,61 @@ function MyListMovieCard({ movie, item }: Props) {
           ))}
         </div>
 
-        {/* 🎯 STATUS (חדש - בלי לשבור כלום) */}
-        <div className="flex gap-2 text-xs">
-          <button
-            onClick={() => setStatus("want_to_watch")}
-            className={`px-2 py-1 rounded transition ${
-              item.status === "want_to_watch"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-800 text-gray-300"
-            }`}
-          >
-            רוצה לצפות
-          </button>
+        {/* 📝 NOTES (FINAL UX) */}
+        {!editing ? (
+          <div className="flex flex-col gap-2">
 
-          <button
-            onClick={() => setStatus("watched")}
-            className={`px-2 py-1 rounded transition ${
-              item.status === "watched"
-                ? "bg-green-500 text-white"
-                : "bg-gray-800 text-gray-300"
-            }`}
-          >
-            צפיתי
-          </button>
-        </div>
+            {/* TEXT */}
+            <div className="text-xs text-gray-300 bg-black/60 p-2 rounded min-h-[40px]">
+              {notes ? notes : <span className="text-gray-500">No notes yet</span>}
+            </div>
 
-        {/* notes */}
-        <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          onBlur={saveNotes}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              saveNotes();
-              e.currentTarget.blur();
-            }
-          }}
-          className="bg-black text-white text-xs p-2 rounded border border-gray-700"
-          placeholder="Notes..."
-        />
+            {/* ACTION */}
+            <button
+              onClick={() => setEditing(true)}
+              className="text-blue-400 text-xs hover:text-blue-300 self-end"
+            >
+              {notes ? "Edit" : "+ Add note"}
+            </button>
 
-        {/* remove — FIXED */}
-        <button
-          onClick={handleRemove}
-          className="text-red-400 text-xs hover:text-red-300 transition"
-        >
-          Remove
-        </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+
+            <textarea
+              autoFocus
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="
+                bg-black text-white text-xs p-2 rounded
+                border border-gray-700
+                focus:border-blue-500
+                outline-none resize-none
+              "
+              rows={3}
+              placeholder="Write your note..."
+            />
+
+            <div className="flex justify-between">
+
+              <button
+                onClick={cancel}
+                className="text-gray-400 text-xs hover:text-white"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={save}
+                className="text-green-400 text-xs hover:text-green-300"
+              >
+                Save
+              </button>
+
+            </div>
+
+          </div>
+        )}
 
       </div>
     </div>
