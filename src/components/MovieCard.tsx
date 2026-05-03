@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Movie } from "../types/movie";
-import FavoriteButton from "./FavoriteButton";
+import MyListButton from "./MyListButton";
 
 export default function MovieCard({ movie }: { movie: Movie }) {
   const poster = movie.poster_path
@@ -8,7 +8,7 @@ export default function MovieCard({ movie }: { movie: Movie }) {
     : "https://via.placeholder.com/500x750";
 
   const rating =
-    movie.vote_average && movie.vote_average > 0
+    movie.vote_average > 0
       ? movie.vote_average.toFixed(1)
       : null;
 
@@ -19,73 +19,54 @@ export default function MovieCard({ movie }: { movie: Movie }) {
         relative
         w-[220px]
         h-[360px]
-        cursor-pointer
-        group
-        overflow-hidden
         rounded-xl
+        overflow-hidden
         flex-shrink-0
+        group
       "
     >
-      {/* POSTER */}
+      {/* IMAGE */}
       <img
         src={poster}
-        alt={movie.title}
-        className="
-          w-full
-          h-full
-          object-cover
-          group-hover:scale-105
-          transition
-        "
+        className="w-full h-full object-cover group-hover:scale-105 transition"
       />
 
-      {/* HOVER OVERLAY */}
-      <div
-        className="
-          absolute inset-0
-          bg-black/0
-          group-hover:bg-black/40
-          transition
-        "
-      />
+      {/* DARK OVERLAY */}
+      <div className="
+        absolute inset-0
+        bg-black/0
+        group-hover:bg-black/40
+        transition
+        z-10
+      " />
 
-      {/* FAVORITE BUTTON */}
-      <FavoriteButton
-        movieId={movie.id}
-        className="
-          absolute
-          top-2
-          right-2
-          text-2xl
-          opacity-0
-          group-hover:opacity-100
-          transition
-        "
-      />
-
-      {/* RATING BADGE */}
+      {/* ⭐ RATING */}
       {rating && (
-        <div
-          className="
-            absolute
-            top-2
-            left-2
-            bg-black/70
-            text-yellow-400
-            text-sm
-            font-semibold
-            px-2
-            py-1
-            rounded-lg
-            backdrop-blur
-          "
-        >
+        <div className="
+          absolute top-2 left-2
+          bg-black/70
+          text-yellow-400
+          text-sm px-2 py-1
+          rounded-lg
+          z-20
+        ">
           ⭐ {rating}
         </div>
       )}
 
+      {/* ➕ MY LIST BUTTON (החלק החשוב) */}
+      <div className="
+        absolute top-2 right-2
+        z-30
+      ">
+        <MyListButton movieId={movie.id} />
+      </div>
+
       {/* TITLE */}
-      <div className="absolute bottom-0 p-3 w-full">
+      <div className="
+        absolute bottom-0 p-3 w-full
+        z-20
+      ">
         <p className="text-sm font-semibold line-clamp-2">
           {movie.title}
         </p>

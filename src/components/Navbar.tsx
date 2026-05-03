@@ -30,7 +30,7 @@ export default function Navbar() {
         {/* Links */}
         <div className="flex gap-6">
           <Link to="/">Home</Link>
-          <Link to="/favorites">Favorites</Link>
+          <Link to="/my-list">My List</Link>
         </div>
 
         {/* Search */}
