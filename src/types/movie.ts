@@ -8,6 +8,14 @@ export interface Movie {
   vote_average: number;
   vote_count: number;
   popularity: number;
+
+  genre_ids?: number[];
+  genres?: { id: number; name: string }[];
+}
+
+export interface Genre {
+  id: number;
+  name: string;
 }
 
 export interface MoviesResponse {

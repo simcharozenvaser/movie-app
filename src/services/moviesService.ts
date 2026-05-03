@@ -58,3 +58,20 @@ export async function getMoviesByIds(ids: number[]): Promise<Movie[]> {
     return [];
   }
 }
+
+export async function discoverMovies(
+  genres: number[],
+  page: number = 1
+) {
+  const params: any = {
+    page,
+  };
+
+  if (genres.length) {
+    params.with_genres = genres.join(",");
+  }
+
+  const res = await apiClient.get("/discover/movie", { params });
+
+  return res.data;
+}

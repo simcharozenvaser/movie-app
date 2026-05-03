@@ -24,7 +24,7 @@ export default function MyListPage() {
 
       const ids = list.map((i) => i.movieId);
 
-      if (ids.length === 0) {
+      if (!ids.length) {
         setMovies([]);
         setLoading(false);
         return;
@@ -43,7 +43,6 @@ export default function MyListPage() {
     return new Map(list.map((i) => [i.movieId, i]));
   }, [list]);
 
-  // 🎯 FILTER LOGIC
   const filteredMovies = useMemo(() => {
     if (filter === "all") return movies;
 
@@ -66,6 +65,7 @@ export default function MyListPage() {
 
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
+
         <h1 className="text-3xl font-bold">
           🎬 My List ({filteredMovies.length})
         </h1>
@@ -76,13 +76,11 @@ export default function MyListPage() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`
-                px-3 py-1 rounded text-sm
-                transition
-                ${filter === f
+              className={`px-3 py-1 rounded text-sm transition ${
+                filter === f
                   ? "bg-white text-black"
-                  : "bg-gray-800 text-white hover:bg-gray-700"}
-              `}
+                  : "bg-gray-800 text-white hover:bg-gray-700"
+              }`}
             >
               {f === "all"
                 ? "All"
@@ -94,13 +92,12 @@ export default function MyListPage() {
         </div>
       </div>
 
-      {/* CONTENT */}
+      {/* GRID */}
       {loading ? (
         <p className="text-gray-400">Loading...</p>
       ) : (
-        <div className="
-          grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6
-        ">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+
           {filteredMovies.map((movie) => (
             <MyListMovieCard
               key={movie.id}
@@ -108,6 +105,7 @@ export default function MyListPage() {
               item={itemMap.get(movie.id)}
             />
           ))}
+
         </div>
       )}
     </div>

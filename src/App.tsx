@@ -3,6 +3,8 @@ import MainLayout from "./components/MainLayout";
 import HomePage from "./pages/HomePage";
 import MovieDetailsPage from "./pages/MovieDetailsPage";
 import MyListPage from "./pages/MyListPage";
+import GenresPage from "./pages/GenresPage";
+
 
 export default function App() {
   return (
@@ -16,6 +18,7 @@ export default function App() {
 
         {/* NEW: My List */}
         <Route path="my-list" element={<MyListPage />} />
+        <Route path="genres" element={<GenresPage />} />
       </Route>
     </Routes>
   );
