@@ -16,3 +16,10 @@ export interface MoviesResponse {
   total_pages: number;
   total_results: number;
 }
+
+export type MyListItem = {
+  movieId: number;
+  status: "watched" | "want_to_watch";
+  myRating: number | null;
+  myNotes: string;
+};
