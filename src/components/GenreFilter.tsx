@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useGenres } from "../hooks/useGenres";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   selected: number[];
@@ -9,6 +10,7 @@ type Props = {
 export default function GenreFilter({ selected, onChange }: Props) {
   const { genres, loading } = useGenres();
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   function toggle(id: number) {
     if (selected.includes(id)) {
@@ -26,7 +28,7 @@ export default function GenreFilter({ selected, onChange }: Props) {
         onClick={() => setOpen(!open)}
         className="px-3 py-1 bg-gray-800 rounded text-sm"
       >
-        🎭 Genres ({selected.length})
+        🎭 {t("genres.title")} ({selected.length})
       </button>
 
       {open && (

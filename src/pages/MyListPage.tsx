@@ -3,8 +3,10 @@ import { useMyList } from "../hooks/useMyList";
 import { getMoviesByIds } from "../services/moviesService";
 import type { Movie } from "../types/movie";
 import MyListMovieCard from "../components/MyListMovieCard";
+import { useTranslation } from "react-i18next";
 
 type Filter = "all" | "watched" | "want_to_watch";
+const FILTERS: Filter[] = ["all", "watched", "want_to_watch"];
 
 export default function MyListPage() {
   const { list } = useMyList();
@@ -12,10 +14,15 @@ export default function MyListPage() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("all");
+  const { t } = useTranslation();
 
   const idsKey = useMemo(
-    () => list.map((i) => i.movieId).sort().join(","),
-    [list]
+    () =>
+      list
+        .map((i) => i.movieId)
+        .sort()
+        .join(","),
+    [list],
   );
 
   useEffect(() => {
@@ -55,22 +62,21 @@ export default function MyListPage() {
   if (!loading && movies.length === 0) {
     return (
       <div className="text-center text-gray-400 mt-20 text-lg">
-        🎬 Your list is empty
+        🎬 {t("common.emptyList")}
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-
       {/* HEADER */}
       <h1 className="text-3xl font-bold">
-        🎬 My List ({movies.length})
+        🎬 {t("common.myList")} ({movies.length})
       </h1>
 
-      {/* 🔥 CLEAN TABS UI */}
+      {/* FILTERS */}
       <div className="flex gap-2">
-        {(["all", "watched", "want_to_watch"] as Filter[]).map((f) => (
+        {FILTERS.map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
@@ -80,11 +86,7 @@ export default function MyListPage() {
                 : "bg-gray-800 text-white hover:bg-gray-700"
             }`}
           >
-            {f === "all"
-              ? "All"
-              : f === "watched"
-              ? "Watched"
-              : "Want to Watch"}
+            {t(`movie.${f}`)}
           </button>
         ))}
       </div>
@@ -99,7 +101,6 @@ export default function MyListPage() {
           />
         ))}
       </div>
-
     </div>
   );
 }

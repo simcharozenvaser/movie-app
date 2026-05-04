@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { MyListProvider } from "./context/MyListContext";
 import "./index.css";
 import App from "./App.tsx";
+import "./i18n";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

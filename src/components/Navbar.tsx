@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useSearchMovies } from "../hooks/useSearchMovies";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useLang } from "../hooks/useLang";
+import { useTranslation } from "react-i18next";
+
 
 export default function Navbar() {
   const [query, setQuery] = useState("");
@@ -9,6 +12,9 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isMoviePage = location.pathname.startsWith("/movie/");
+  const { lang, setLang } = useLang();
+  const { t } = useTranslation();
+
 
   const hideSearch = isMoviePage;
 
@@ -24,12 +30,18 @@ export default function Navbar() {
     <div className="relative">
       <nav className="fixed top-0 left-0 w-full z-50 bg-black/90 backdrop-blur border-b border-gray-800 px-6 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div className="text-xl font-bold">🎬 Movie App</div>
+        <div className="text-xl font-bold">🎬 {t("nav.MovieApp")}</div>
+        <button
+          onClick={() => setLang(lang === "he" ? "en" : "he")}
+          className="text-sm px-3 py-1 bg-gray-800 rounded"
+        >
+          🌐 {lang.toUpperCase()}
+        </button>
 
         {/* Links */}
         <div className="flex gap-6">
-          <Link to="/">Home</Link>
-          <Link to="/my-list">My List</Link>
+          <Link to="/">{t("nav.home")}</Link>
+          <Link to="/my-list">{t("nav.my_list")}</Link>
         </div>
 
         {/* Search */}
@@ -37,7 +49,7 @@ export default function Navbar() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search movies..."
+            placeholder={t("nav.search_placeholder")}
             className="px-3 py-1 rounded bg-gray-800 text-white"
           />
         )}

@@ -2,6 +2,7 @@ import { memo, useEffect, useState } from "react";
 import type { Movie, MyListItem } from "../types/movie";
 import { useMyList } from "../hooks/useMyList";
 import MovieCard from "./MovieCard";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   movie: Movie;
@@ -13,8 +14,11 @@ function MyListMovieCard({ movie, item }: Props) {
 
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState("");
-  const [status, setStatus] = useState<"watched" | "want_to_watch">("want_to_watch");
+  const [status, setStatus] = useState<"watched" | "want_to_watch">(
+    "want_to_watch",
+  );
   const [rating, setRating] = useState<number | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!item) return;
@@ -41,18 +45,20 @@ function MyListMovieCard({ movie, item }: Props) {
 
   return (
     <div className="flex flex-col items-center">
-
       {/* 🎬 MOVIE CARD */}
       <MovieCard movie={movie} />
 
       {/* PANEL */}
       <div className="w-[220px] mt-2 bg-gray-900 rounded-lg p-3 flex flex-col gap-2 h-[210px] justify-between">
-
         {/* STATUS */}
         <div className="flex justify-between text-xs text-gray-300">
-          <span>Status:</span>
-          <span className={status === "watched" ? "text-green-400" : "text-blue-400"}>
-            {status === "watched" ? "Watched" : "Want"}
+          <span>{t("myList.status")}</span>
+          <span
+            className={
+              status === "watched" ? "text-green-400" : "text-blue-400"
+            }
+          >
+            {status === "watched" ? t("myList.watched") : t("myList.want")}
           </span>
         </div>
 
@@ -66,7 +72,7 @@ function MyListMovieCard({ movie, item }: Props) {
                 : "bg-gray-700 text-white"
             }`}
           >
-            Watched
+            {t("myList.watched")}
           </button>
 
           <button
@@ -77,14 +83,14 @@ function MyListMovieCard({ movie, item }: Props) {
                 : "bg-gray-700 text-white"
             }`}
           >
-            Want
+            {t("myList.want")}
           </button>
         </div>
 
         {/* ⭐ RATING */}
         <div className="flex flex-col gap-1">
           <div className="text-xs text-gray-300">
-            My Rating: {rating ?? "—"}
+            {t("myList.MyRating")} {rating ?? "—"}
           </div>
 
           <div className="flex gap-1 flex-wrap">
@@ -115,7 +121,7 @@ function MyListMovieCard({ movie, item }: Props) {
         {/* NOTES */}
         {!isEditing ? (
           <div className="text-xs text-gray-300 h-[40px] overflow-hidden">
-            {notes || "No notes"}
+            {notes || t("myList.add_notes")}
           </div>
         ) : (
           <textarea
@@ -127,12 +133,11 @@ function MyListMovieCard({ movie, item }: Props) {
 
         {/* ACTIONS */}
         <div className="flex justify-between items-center">
-
           <button
             onClick={() => setIsEditing(!isEditing)}
             className="text-blue-400 text-xs"
           >
-            {isEditing ? "Cancel" : "Edit"}
+            {isEditing ? t("myList.cancel") : t("myList.edit_notes")}
           </button>
 
           {isEditing && (
@@ -143,10 +148,9 @@ function MyListMovieCard({ movie, item }: Props) {
               }}
               className="text-green-400 text-xs"
             >
-              Save
+              {t("myList.save")}
             </button>
           )}
-
         </div>
       </div>
     </div>
