@@ -63,7 +63,7 @@ export async function discoverMovies(
   genres: number[],
   page: number = 1
 ) {
-  const params: any = {
+  const params: Record<string, any> = {
     page,
   };
 

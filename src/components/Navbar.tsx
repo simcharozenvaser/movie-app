@@ -9,9 +9,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const isMoviePage = location.pathname.startsWith("/movie/");
-  const isFavoritesPage = location.pathname.startsWith("/favorites");
 
-  const hideSearch = isMoviePage || isFavoritesPage;
+  const hideSearch = isMoviePage;
 
   useEffect(() => {
     const id = setTimeout(() => {

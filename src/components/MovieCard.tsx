@@ -1,32 +1,20 @@
 import { Link } from "react-router-dom";
 import type { Movie } from "../types/movie";
 import MyListButton from "./MyListButton";
-import { useGenres } from "../hooks/useGenres";
+import { useGenreMap } from "../hooks/useGenreMap";
+import { getMovieGenreNames } from "../utils/movieGenres";
 
 export default function MovieCard({ movie }: { movie: Movie }) {
-  const { genres } = useGenres();
+  const genreMap = useGenreMap();
 
   const poster = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://via.placeholder.com/500x750";
 
   const rating =
-    movie.vote_average > 0
-      ? movie.vote_average.toFixed(1)
-      : null;
+    movie.vote_average > 0 ? movie.vote_average.toFixed(1) : null;
 
-  // 🔥 FIX אמיתי
-  let genreNames: string[] = [];
-
-  if (movie.genres && movie.genres.length > 0) {
-    // case 1: details endpoint
-    genreNames = movie.genres.map((g) => g.name);
-  } else if (movie.genre_ids && genres.length) {
-    // case 2: list endpoint
-    genreNames = movie.genre_ids
-      .map((id) => genres.find((g) => g.id === id)?.name)
-      .filter((name): name is string => Boolean(name));
-  }
+  const genreNames = getMovieGenreNames(movie, genreMap);
 
   return (
     <Link
@@ -46,12 +34,11 @@ export default function MovieCard({ movie }: { movie: Movie }) {
         </div>
       )}
 
-      {/* 🎭 GENRES */}
       {genreNames.length > 0 && (
         <div className="absolute top-10 left-2 z-20 flex flex-wrap gap-1 max-w-[90%]">
-          {genreNames.map((name, i) => (
+          {genreNames.map((name) => (
             <span
-              key={i}
+              key={name}
               className="text-[10px] bg-black/70 text-white px-2 py-[2px] rounded-full"
             >
               {name}

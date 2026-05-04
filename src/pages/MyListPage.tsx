@@ -61,53 +61,45 @@ export default function MyListPage() {
   }
 
   return (
-    <div>
+    <div className="space-y-6">
 
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-6">
+      <h1 className="text-3xl font-bold">
+        🎬 My List ({movies.length})
+      </h1>
 
-        <h1 className="text-3xl font-bold">
-          🎬 My List ({filteredMovies.length})
-        </h1>
-
-        {/* FILTERS */}
-        <div className="flex gap-2">
-          {(["all", "watched", "want_to_watch"] as Filter[]).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-3 py-1 rounded text-sm transition ${
-                filter === f
-                  ? "bg-white text-black"
-                  : "bg-gray-800 text-white hover:bg-gray-700"
-              }`}
-            >
-              {f === "all"
-                ? "All"
-                : f === "watched"
-                ? "Watched"
-                : "Want"}
-            </button>
-          ))}
-        </div>
+      {/* 🔥 CLEAN TABS UI */}
+      <div className="flex gap-2">
+        {(["all", "watched", "want_to_watch"] as Filter[]).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`px-4 py-2 rounded-full text-sm transition ${
+              filter === f
+                ? "bg-white text-black"
+                : "bg-gray-800 text-white hover:bg-gray-700"
+            }`}
+          >
+            {f === "all"
+              ? "All"
+              : f === "watched"
+              ? "Watched"
+              : "Want to Watch"}
+          </button>
+        ))}
       </div>
 
       {/* GRID */}
-      {loading ? (
-        <p className="text-gray-400">Loading...</p>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+        {filteredMovies.map((movie) => (
+          <MyListMovieCard
+            key={movie.id}
+            movie={movie}
+            item={itemMap.get(movie.id)}
+          />
+        ))}
+      </div>
 
-          {filteredMovies.map((movie) => (
-            <MyListMovieCard
-              key={movie.id}
-              movie={movie}
-              item={itemMap.get(movie.id)}
-            />
-          ))}
-
-        </div>
-      )}
     </div>
   );
 }

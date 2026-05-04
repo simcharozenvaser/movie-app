@@ -12,7 +12,8 @@ export function useSearchMovies() {
       setResults([]);
       return;
     }
-
+    
+    setError(null);
     try {
       setLoading(true);
 
