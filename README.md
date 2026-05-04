@@ -63,14 +63,6 @@ TMDB API / LocalStorage
 
 ---
 
-## ▶️ Getting Started
-
-```bash
-npm install
-npm run dev
-
----
-
 🔮 Future Improvements
 
 User authentication system
@@ -86,3 +78,10 @@ React architecture design
 Component composition
 State management patterns
 API integration patterns
+
+
+## ▶️ Getting Started
+
+```bash
+npm install
+npm run dev
