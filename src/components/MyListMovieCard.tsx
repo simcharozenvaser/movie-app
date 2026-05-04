@@ -14,11 +14,13 @@ function MyListMovieCard({ movie, item }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<"watched" | "want_to_watch">("want_to_watch");
+  const [rating, setRating] = useState<number | null>(null);
 
   useEffect(() => {
     if (!item) return;
     setNotes(item.myNotes || "");
     setStatus(item.status);
+    setRating(item.myRating ?? null);
   }, [item?.movieId]);
 
   if (!item) return null;
@@ -32,14 +34,19 @@ function MyListMovieCard({ movie, item }: Props) {
     updateMovie(movie.id, { myNotes: notes });
   };
 
+  const saveRating = (value: number) => {
+    setRating(value);
+    updateMovie(movie.id, { myRating: value });
+  };
+
   return (
     <div className="flex flex-col items-center">
 
-      {/* 🎬 MOVIE CARD (unchanged) */}
+      {/* 🎬 MOVIE CARD */}
       <MovieCard movie={movie} />
 
-      {/* 🧱 FIXED HEIGHT PANEL */}
-      <div className="w-[220px] mt-2 bg-gray-900 rounded-lg p-3 flex flex-col gap-2 h-[170px]">
+      {/* PANEL */}
+      <div className="w-[220px] mt-2 bg-gray-900 rounded-lg p-3 flex flex-col gap-2 h-[210px] justify-between">
 
         {/* STATUS */}
         <div className="flex justify-between text-xs text-gray-300">
@@ -74,28 +81,73 @@ function MyListMovieCard({ movie, item }: Props) {
           </button>
         </div>
 
-        {/* NOTES (fixed space, no growth) */}
+        {/* ⭐ RATING */}
+        <div className="flex flex-col gap-1">
+          <div className="text-xs text-gray-300">
+            My Rating: {rating ?? "—"}
+          </div>
+
+          <div className="flex gap-1 flex-wrap">
+            {Array.from({ length: 10 }).map((_, i) => {
+              const value = i + 1;
+
+              return (
+                <button
+                  key={value}
+                  onClick={() => saveRating(value)}
+                  className={`
+                    w-5 h-5 text-[10px] rounded
+                    transition
+                    ${
+                      rating === value
+                        ? "bg-yellow-400 text-black"
+                        : "bg-gray-700 text-white hover:bg-gray-600"
+                    }
+                  `}
+                >
+                  {value}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* NOTES */}
         {!isEditing ? (
-          <div className="text-xs text-gray-300 h-[50px] overflow-hidden">
+          <div className="text-xs text-gray-300 h-[40px] overflow-hidden">
             {notes || "No notes"}
           </div>
         ) : (
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            onBlur={saveNotes}
-            className="w-full h-[50px] resize-none bg-black text-white text-xs p-1 rounded"
+            className="w-full h-[40px] resize-none bg-black text-white text-xs p-1 rounded"
           />
         )}
 
-        {/* EDIT TOGGLE */}
-        <button
-          onClick={() => setIsEditing(!isEditing)}
-          className="text-blue-400 text-xs text-left"
-        >
-          {isEditing ? "Done" : "Edit"}
-        </button>
+        {/* ACTIONS */}
+        <div className="flex justify-between items-center">
 
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className="text-blue-400 text-xs"
+          >
+            {isEditing ? "Cancel" : "Edit"}
+          </button>
+
+          {isEditing && (
+            <button
+              onClick={() => {
+                saveNotes();
+                setIsEditing(false);
+              }}
+              className="text-green-400 text-xs"
+            >
+              Save
+            </button>
+          )}
+
+        </div>
       </div>
     </div>
   );
