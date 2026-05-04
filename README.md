@@ -1,73 +1,88 @@
-# React + TypeScript + Vite
+# 🎬 Movie Discovery & Rating App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern React + TypeScript movie application built with Vite and powered by The Movie Database (TMDB) API.
 
-Currently, two official plugins are available:
+The app allows users to discover movies, search, view details, filter by genres, and manage a personal movie list with ratings and notes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🎬 Browse movies (Popular / Trending / Top Rated / Upcoming)
+- 🔍 Live movie search with dropdown results
+- 🎭 Filter movies by genres
+- 📄 Movie details page
+- ⭐ Personal movie list (My List)
+- 📝 Add personal notes per movie
+- 📊 Personal rating system (separate from TMDB rating)
+- 💾 Persistent storage using localStorage
+- ⚡ Loading / Error / Empty states handling
+- 📱 Responsive UI
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧱 Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React 18
+- TypeScript
+- Vite
+- React Router
+- Axios
+- Tailwind CSS
+- TMDB API
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🏗️ Architecture
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The project follows a layered architecture:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+UI Components  
+↓  
+Custom Hooks (state + logic)  
+↓  
+Services (API layer)  
+↓  
+TMDB API / LocalStorage
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+## 🎯 Core Concepts
+
+- Separation of UI and business logic
+- Custom hooks for reusable logic
+- Service layer for API communication
+- Centralized API client (Axios)
+- LocalStorage-based personal data system
+
+---
+
+## 🧠 State Management
+
+- Server state: TMDB API (movies, genres, search)
+- Client state: My List (localStorage)
+
+---
+
+## ▶️ Getting Started
+
+```bash
+npm install
+npm run dev
+
+---
+
+🔮 Future Improvements
+
+User authentication system
+Backend database for My List
+Shareable lists between users
+Pagination / infinite scroll optimization
+Performance caching layer
+
+📌 Notes
+This project is built for learning and demonstrates:
+
+React architecture design
+Component composition
+State management patterns
+API integration patterns
