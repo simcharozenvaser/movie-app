@@ -22,8 +22,7 @@ export function MyListProvider({ children }: { children: React.ReactNode }) {
       return [];
     }
   });
-  
-  // 💾 save on change
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   }, [list]);

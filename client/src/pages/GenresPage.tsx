@@ -35,7 +35,6 @@ export default function GenresPage() {
     load();
   }, [selectedGenres, page]);
 
-  // 🔥 RESET כשמשנים זאנר
   useEffect(() => {
     setPage(1);
   }, [selectedGenres]);

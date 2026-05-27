@@ -12,7 +12,6 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* 🎭 GO TO GENRES */}
       <div className="flex justify-end mb-4">
         <Link
           to="/genres"
