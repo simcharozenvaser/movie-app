@@ -3,7 +3,7 @@ import MainLayout from "./components/MainLayout";
 import HomePage from "./pages/HomePage";
 import MovieDetailsPage from "./pages/MovieDetailsPage";
 import MyListPage from "./pages/MyListPage";
-import GenresPage from "./pages/GenresPage";
+import DiscoverPage from "./pages/DiscoverPage";
 import AuthPage from "./auth/AuthPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -19,7 +19,7 @@ export default function App() {
           <Route index element={<HomePage />} />
           <Route path="movie/:id" element={<MovieDetailsPage />} />
           <Route path="my-list" element={<MyListPage />} />
-          <Route path="genres" element={<GenresPage />} />
+          <Route path="discover" element={<DiscoverPage />} />
         </Route>
       </Route>
     </Routes>

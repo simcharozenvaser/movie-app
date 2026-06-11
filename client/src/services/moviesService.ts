@@ -1,9 +1,10 @@
 import { apiClient } from "./apiClient";
 import type { MoviesResponse, Movie } from "../types/movie";
+import type { DiscoverFilters } from "../types/discover";
 
 export async function getMovies(
   endpoint: string,
-  page: number = 1
+  page: number = 1,
 ): Promise<MoviesResponse> {
   try {
     const response = await apiClient.get<MoviesResponse>(endpoint, {
@@ -19,12 +20,9 @@ export async function getMovies(
 
 export async function searchMovies(query: string): Promise<MoviesResponse> {
   try {
-    const response = await apiClient.get<MoviesResponse>(
-      "/search/movie",
-      {
-        params: { query },
-      }
-    );
+    const response = await apiClient.get<MoviesResponse>("/search/movie", {
+      params: { query },
+    });
 
     return response.data;
   } catch (error) {
@@ -45,25 +43,21 @@ export async function getMovieById(id: string): Promise<Movie> {
 
 export async function getMoviesByIds(ids: number[]): Promise<Movie[]> {
   try {
-    const requests = ids.map((id) =>
-      apiClient.get(`/movie/${id}`)
-    );
+    const requests = ids.map((id) => apiClient.get(`/movie/${id}`));
 
     const responses = await Promise.all(requests);
 
     return responses.map((res) => res.data);
-
   } catch (error) {
     console.error("Error fetching favorite movies:", error);
     return [];
   }
 }
 
-export async function discoverMovies(
-  genres: number[],
-  page: number = 1
-) {
-  const params: Record<string, any> = {
+export async function discoverMovies(filters: DiscoverFilters) {
+  const { genres, minYear, maxYear, minRating, page = 1 } = filters;
+
+  const params: Record<string, string | number> = {
     page,
   };
 
@@ -71,6 +65,18 @@ export async function discoverMovies(
     params.with_genres = genres.join(",");
   }
 
+  if (minYear) {
+    params["primary_release_date.gte"] = `${minYear}-01-01`;
+  }
+
+  if (maxYear) {
+    params["primary_release_date.lte"] = `${maxYear}-12-31`;
+  }
+
+  if (minRating) {
+    params["vote_average.gte"] = minRating;
+  }
+  console.log(params);
   const res = await apiClient.get("/discover/movie", { params });
 
   return res.data;

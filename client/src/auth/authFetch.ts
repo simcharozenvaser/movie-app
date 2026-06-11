@@ -1,14 +1,14 @@
 const API = "http://localhost:3001";
 
 let isRefreshing = false;
-let queue: Array<(token: string | null) => void> = [];
+let queue: ((token: string | null) => void)[] = [];
 
 function resolveQueue(token: string | null) {
   queue.forEach((cb) => cb(token));
   queue = [];
 }
 
-async function refreshToken() {
+async function refreshToken(): Promise<string> {
   const res = await fetch(`${API}/auth/refresh`, {
     method: "POST",
     credentials: "include",
@@ -17,11 +17,6 @@ async function refreshToken() {
   if (!res.ok) throw new Error("Refresh failed");
 
   const data = await res.json();
-
-  if (!data?.accessToken) {
-    throw new Error("Invalid refresh response");
-  }
-
   return data.accessToken;
 }
 
@@ -29,28 +24,33 @@ export async function authFetch(
   url: string,
   options: RequestInit = {}
 ): Promise<Response> {
-  let token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-  const request = (t: string | null) =>
+  if (!token) {
+    return new Response(JSON.stringify({ error: "NO_TOKEN" }), {
+      status: 401,
+    });
+  }
+
+  const request = (t: string) =>
     fetch(`${API}${url}`, {
       ...options,
       credentials: "include",
       headers: {
         ...(options.headers || {}),
-        Authorization: t ? `Bearer ${t}` : "",
+        Authorization: `Bearer ${t}`,
         "Content-Type": "application/json",
       },
     });
 
   let res = await request(token);
 
-  if (res.status !== 401) {
-    return res;
-  }
+  if (res.status !== 401) return res;
 
   if (isRefreshing) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       queue.push(async (newToken) => {
+        if (!newToken) return reject(new Error("NO_REFRESH"));
         resolve(await request(newToken));
       });
     });
@@ -60,19 +60,19 @@ export async function authFetch(
 
   try {
     const newToken = await refreshToken();
-
     localStorage.setItem("token", newToken);
 
     isRefreshing = false;
     resolveQueue(newToken);
 
     return await request(newToken);
-  } catch (err) {
+  } catch {
     isRefreshing = false;
     resolveQueue(null);
 
     localStorage.removeItem("token");
+    window.location.href = "/auth";
 
-    throw err;
+    return new Response(null, { status: 401 });
   }
 }

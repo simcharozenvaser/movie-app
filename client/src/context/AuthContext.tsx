@@ -16,6 +16,7 @@ type User = {
 type AuthContextType = {
   user: User | null;
   loading: boolean;
+  ready: boolean;
   login: (token: string, user: User) => void;
   logout: () => void;
 };
@@ -26,12 +27,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const ready = !loading;
+
   useEffect(() => {
     const init = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setUser(null);
+          return;
+        }
+
         const me = await getMe();
         setUser(me);
       } catch {
+        localStorage.removeItem("token");
         setUser(null);
       } finally {
         setLoading(false);
@@ -43,18 +53,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (token: string, user: User) => {
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
     setUser(user);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, ready, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -3,44 +3,33 @@ import { useMyList } from "../hooks/useMyList";
 import { getMoviesByIds } from "../services/moviesService";
 import type { Movie } from "../types/movie";
 import MyListMovieCard from "../components/MyListMovieCard";
-import { useTranslation } from "react-i18next";
 
 type Filter = "all" | "watched" | "want_to_watch";
+
 const FILTERS: Filter[] = ["all", "watched", "want_to_watch"];
 
 export default function MyListPage() {
-  const { list } = useMyList();
+  const { list, loading } = useMyList();
 
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>("all");
-  const { t } = useTranslation();
 
   const idsKey = useMemo(
-    () =>
-      list
-        .map((i) => i.movieId)
-        .sort()
-        .join(","),
-    [list],
+    () => list.map((i) => i.movieId).sort().join(","),
+    [list]
   );
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
-
       const ids = list.map((i) => i.movieId);
 
       if (!ids.length) {
         setMovies([]);
-        setLoading(false);
         return;
       }
 
       const data = await getMoviesByIds(ids);
       setMovies(data);
-
-      setLoading(false);
     }
 
     load();
@@ -59,19 +48,23 @@ export default function MyListPage() {
     });
   }, [movies, filter, itemMap]);
 
-  if (!loading && movies.length === 0) {
+  if (loading) {
+    return <div className="text-center mt-20">Loading...</div>;
+  }
+
+  if (!movies.length) {
     return (
-      <div className="text-center text-gray-400 mt-20 text-lg">
-        🎬 {t("common.emptyList")}
+      <div className="text-center text-gray-400 mt-20">
+        🎬 Empty List
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* HEADER */}
+
       <h1 className="text-3xl font-bold">
-        🎬 {t("common.myList")} ({movies.length})
+        🎬 My List ({movies.length})
       </h1>
 
       {/* FILTERS */}
@@ -86,7 +79,11 @@ export default function MyListPage() {
                 : "bg-gray-800 text-white hover:bg-gray-700"
             }`}
           >
-            {t(`movie.${f}`)}
+            {f === "all"
+              ? "All"
+              : f === "watched"
+              ? "Watched"
+              : "Want"}
           </button>
         ))}
       </div>

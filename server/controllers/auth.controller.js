@@ -102,4 +102,18 @@ async function me(req, res) {
   }
 }
 
-module.exports = { register, login, me, refresh };
+async function logout(req, res) {
+  try {
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+    });
+
+    return res.json({ message: "Logged out" });
+  } catch (err) {
+    return res.status(500).json({ error: "Logout failed" });
+  }
+}
+
+module.exports = { register, login, me, refresh, logout};

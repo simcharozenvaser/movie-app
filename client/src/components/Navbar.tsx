@@ -1,85 +1,130 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { useSearchMovies } from "../hooks/useSearchMovies";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useLang } from "../hooks/useLang";
-import { useTranslation } from "react-i18next";
-
 
 export default function Navbar() {
   const [query, setQuery] = useState("");
-  const { results, search } = useSearchMovies();
+
+  const { user, logout } = useAuth();
+  const { search, results } = useSearchMovies();
+
   const navigate = useNavigate();
-  const location = useLocation();
-  const isMoviePage = location.pathname.startsWith("/movie/");
-  const { lang, setLang } = useLang();
-  const { t } = useTranslation();
 
-
-  const hideSearch = isMoviePage;
-
+  const searchRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    const id = setTimeout(() => {
-      search(query);
-    }, 300);
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setQuery("");
+        search("");
+      }
+    }
 
-    return () => clearTimeout(id);
-  }, [query]);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const isMoviePage = location.pathname.startsWith("/movie/");
 
   return (
-    <div className="relative">
-      <nav className="fixed top-0 left-0 w-full z-50 bg-black/90 backdrop-blur border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <div className="text-xl font-bold">🎬 {t("nav.MovieApp")}</div>
-        <button
-          onClick={() => setLang(lang === "he" ? "en" : "he")}
-          className="text-sm px-3 py-1 bg-gray-800 rounded"
-        >
-          🌐 {lang.toUpperCase()}
-        </button>
-
-        {/* Links */}
-        <div className="flex gap-6">
-          <Link to="/">{t("nav.home")}</Link>
-          <Link to="/my-list">{t("nav.my_list")}</Link>
-        </div>
-
-        {/* Search */}
-        {!hideSearch && (
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={t("nav.search_placeholder")}
-            className="px-3 py-1 rounded bg-gray-800 text-white"
-          />
+    <nav
+      className="fixed top-0 left-0 w-full h-[68px] bg-black/95 border-b border-gray-800 flex items-center px-6 z-50"
+    >
+      {/* LEFT SIDE (actions) */}
+      <div className="flex items-center gap-3 w-1/4">
+        {user && (
+          <button
+            onClick={logout}
+            className="px-3 py-1 text-sm bg-red-600 rounded hover:bg-red-500"
+          >
+            Logout
+          </button>
         )}
-      </nav>
 
-      {/* DROPDOWN */}
-      {!isMoviePage && query && results.length > 0 && (
-        <div className="absolute top-14 right-6 w-96 bg-gray-900 text-white shadow-2xl rounded-lg max-h-96 overflow-y-auto z-50 border border-gray-800">
-          {results.slice(0, 8).map((movie) => (
-            <div
-              key={movie.id}
-              onClick={() => {
-                navigate(`/movie/${movie.id}`);
-                setQuery("");
-              }}
-              className="p-2 hover:bg-gray-800 cursor-pointer flex gap-2"
-            >
-              <img
-                src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
-                className="w-10 h-14 object-cover"
-              />
-
-              <div>
-                <p className="font-bold text-sm">{movie.title}</p>
-                <p className="text-xs text-gray-500">{movie.release_date}</p>
-              </div>
+        {user && (
+          <div className="flex items-center gap-2 text-sm text-gray-300 px-2">
+            <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs">
+              {user.username?.charAt(0).toUpperCase()}
             </div>
-          ))}
+            {user.username}
+          </div>
+        )}
+      </div>
+
+      {/* CENTER NAV */}
+      <div className="flex items-center justify-center gap-6 mx-auto w-1/2">
+        <Link className="text-gray-300 hover:text-white" to="/">
+          Home
+        </Link>
+
+        <Link className="text-gray-300 hover:text-white" to="/discover">
+          Discover
+        </Link>
+
+        <Link className="text-gray-300 hover:text-white" to="/my-list">
+          My List
+        </Link>
+      </div>
+
+      {/* RIGHT SIDE (logo + search) */}
+      <div className="flex items-center gap-4 w-1/4">
+        {/* SEARCH */}
+        {!isMoviePage && (
+          <div ref={searchRef} className="relative">
+            <input
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                search(e.target.value);
+              }}
+              placeholder="Search Movie..."
+              className="
+                w-[200px]
+                transition-all duration-300
+                px-3 py-1
+                bg-gray-800
+                rounded
+                text-white
+                outline-none
+              "
+            />
+
+            {query && results.length > 0 && (
+              <div className="absolute top-10 right-0 w-80 bg-gray-900 border border-gray-700 rounded shadow-lg max-h-72 overflow-auto">
+                {results.slice(0, results.length).map((movie) => (
+                  <div
+                    key={movie.id}
+                    onClick={() => {
+                      navigate(`/movie/${movie.id}`);
+                      setQuery("");
+                    }}
+                    className="p-2 hover:bg-gray-800 cursor-pointer text-sm"
+                  >
+                    {movie.title}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        {/* LOGO */}
+        <div className="flex items-center gap-2 font-bold">
+          <span className="text-red-600 text-xl">N</span>
+
+          <div className="flex flex-col leading-tight">
+            <span className="text-white tracking-wide">MOVIE</span>
+            <span className="text-[9px] text-gray-500 tracking-[3px]">
+              STREAM
+            </span>
+          </div>
         </div>
-      )}
-    </div>
+      </div>
+    </nav>
   );
 }

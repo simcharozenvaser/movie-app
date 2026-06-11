@@ -1,6 +1,7 @@
 import { useMyList } from "../hooks/useMyList";
+import {memo} from "react"
 
-export default function MyListButton({ movieId }: { movieId: number }) {
+export default memo(function MyListButton({ movieId }: { movieId: number }) {
   const { addMovie, removeMovie, isInList } = useMyList();
 
   const inList = isInList(movieId);
@@ -27,4 +28,4 @@ export default function MyListButton({ movieId }: { movieId: number }) {
       {inList ? "✔" : "+"}
     </button>
   );
-}
+})

@@ -11,10 +11,10 @@ export default function MovieCard({ movie }: { movie: Movie }) {
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : "https://via.placeholder.com/500x750";
 
-  const rating =
-    movie.vote_average > 0 ? movie.vote_average.toFixed(1) : null;
+  const rating = movie.vote_average > 0 ? movie.vote_average.toFixed(1) : null;
 
   const genreNames = getMovieGenreNames(movie, genreMap);
+  const year = movie.release_date?.split("-")[0];
 
   return (
     <Link
@@ -52,9 +52,8 @@ export default function MovieCard({ movie }: { movie: Movie }) {
       </div>
 
       <div className="absolute bottom-0 p-3 w-full z-20">
-        <p className="text-sm font-semibold line-clamp-2">
-          {movie.title}
-        </p>
+        <p className="text-sm font-semibold line-clamp-2">{movie.title}</p>
+        {year && <p className="text-xs text-gray-300 mt-1">{year}</p>}
       </div>
     </Link>
   );
