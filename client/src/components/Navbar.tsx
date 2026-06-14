@@ -80,7 +80,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4 mx-auto overflow-x-auto scrollbar-hide">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/discover">Discover</NavLink>
-          <NavLink to="/my-list">My List 0</NavLink>
+          <NavLink to="/my-list">My List</NavLink>
         </div>
 
         {/* Right: search icon + avatar */}
@@ -111,12 +111,12 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── MOBILE SEARCH PANEL ── */}
+      {/* ── MOBILE SEARCH PANEL — fixed independently, below navbar ── */}
       {searchOpen && !isMoviePage && (
         <div
           ref={searchRef}
-          className="md:hidden px-4 pb-3"
-          style={{ borderTop: "1px solid #1a1a1a" }}
+          className="md:hidden fixed top-[56px] left-0 w-full px-4 pb-3 z-40"
+          style={{ background: "rgba(10,10,10,0.97)", borderBottom: "1px solid #1a1a1a" }}
         >
           <input
             autoFocus
