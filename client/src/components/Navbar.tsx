@@ -80,7 +80,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4 mx-auto overflow-x-auto scrollbar-hide">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/discover">Discover</NavLink>
-          <NavLink to="/my-list">My List</NavLink>
+          <NavLink to="/my-list">My List 0</NavLink>
         </div>
 
         {/* Right: search icon + avatar */}
