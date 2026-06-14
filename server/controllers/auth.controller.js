@@ -6,6 +6,8 @@ const {
 } = require("../utils/jwt");
 const pool = require("../db");
 
+const isProd = process.env.NODE_ENV === "production";
+
 async function register(req, res) {
   try {
     const { username, email, password } = req.body;
@@ -41,8 +43,8 @@ async function login(req, res) {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -62,29 +64,29 @@ async function login(req, res) {
 }
 
 async function refresh(req, res) {
-try {
-const token = req.cookies.refreshToken;
+  try {
+    const token = req.cookies.refreshToken;
 
-if (!token) {
-return res.status(401).json({ error: "No refresh token" });
-}
-console.log("🔄 refresh endpoint hit");
-console.log("🍪 cookies:", req.cookies);
-const decoded = verifyRefreshToken(token);
-console.log("decoded refresh:", decoded);
+    if (!token) {
+      return res.status(401).json({ error: "No refresh token" });
+    }
+    console.log("🔄 refresh endpoint hit");
+    console.log("🍪 cookies:", req.cookies);
+    const decoded = verifyRefreshToken(token);
+    console.log("decoded refresh:", decoded);
 
-const user = {
-id: decoded.userId,
-};
+    const user = {
+      id: decoded.userId,
+    };
 
-const newAccessToken = generateAccessToken(user);
+    const newAccessToken = generateAccessToken(user);
 
-return res.json({
-accessToken: newAccessToken,
-});
-} catch (err) {
-return res.status(403).json({ error: "Invalid refresh token" });
-}
+    return res.json({
+      accessToken: newAccessToken,
+    });
+  } catch (err) {
+    return res.status(403).json({ error: "Invalid refresh token" });
+  }
 }
 
 async function me(req, res) {
@@ -106,8 +108,8 @@ async function logout(req, res) {
   try {
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
     });
 
     return res.json({ message: "Logged out" });
@@ -116,4 +118,4 @@ async function logout(req, res) {
   }
 }
 
-module.exports = { register, login, me, refresh, logout};
+module.exports = { register, login, me, refresh, logout };

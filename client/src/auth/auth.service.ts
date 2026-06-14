@@ -1,6 +1,7 @@
+import { API_URL } from "../config";
 import { authFetch } from "./authFetch";
 
-const API = "http://localhost:3001";
+const API = API_URL;
 
 async function handle(res: Response) {
   const data = await res.json();

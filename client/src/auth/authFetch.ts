@@ -1,4 +1,6 @@
-const API = "http://localhost:3001";
+import { API_URL } from "../config";
+
+const API = API_URL;
 
 let isRefreshing = false;
 let queue: ((token: string | null) => void)[] = [];
