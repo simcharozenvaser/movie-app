@@ -15,10 +15,8 @@ export default function MovieDetailsPage() {
     async function load() {
       try {
         if (!id) return;
-
         setLoading(true);
         setError(null);
-
         const data = await getMovieById(id);
         setMovie(data);
       } catch {
@@ -27,14 +25,13 @@ export default function MovieDetailsPage() {
         setLoading(false);
       }
     }
-
     load();
   }, [id]);
 
   return (
     <AsyncState loading={loading} error={error} isEmpty={!movie}>
       {movie && (
-        <div className="p-6 max-w-5xl mx-auto">
+        <div className="px-4 py-6 max-w-5xl mx-auto">
 
           {/* reuse CARD */}
           <div className="flex justify-center mb-6">
@@ -42,7 +39,7 @@ export default function MovieDetailsPage() {
           </div>
 
           {/* description */}
-          <p className="text-gray-300 leading-relaxed text-center">
+          <p className="text-gray-300 leading-relaxed text-center text-sm md:text-base px-2 md:px-0">
             {movie.overview}
           </p>
 

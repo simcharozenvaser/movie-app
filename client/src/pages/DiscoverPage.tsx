@@ -46,22 +46,12 @@ export default function DiscoverPage() {
   }, [filters]);
 
   const clearAll = () => {
-    setFilters({
-      genres: [],
-      minYear: "",
-      maxYear: "",
-      minRating: "",
-      page: 1,
-    });
+    setFilters({ genres: [], minYear: "", maxYear: "", minRating: "", page: 1 });
   };
 
   const hasActiveFilters =
-    filters.genres.length > 0 ||
-    filters.minYear ||
-    filters.maxYear ||
-    filters.minRating;
+    filters.genres.length > 0 || filters.minYear || filters.maxYear || filters.minRating;
 
-  // Active filter pill summary
   const activePills: { label: string; onRemove: () => void }[] = [];
 
   filters.genres.forEach((id) => {
@@ -97,7 +87,7 @@ export default function DiscoverPage() {
       style={{ background: "#0a0a0a" }}
     >
       {/* ── HEADER ── */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8">
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-1.5 text-white/40 hover:text-white/80 transition-colors text-sm"
@@ -128,10 +118,7 @@ export default function DiscoverPage() {
         style={{ background: "#111111", borderColor: "#1f1f1f" }}
       >
         {/* Genres row */}
-        <div
-          className="px-5 pt-5 pb-4 border-b"
-          style={{ borderColor: "#1f1f1f" }}
-        >
+        <div className="px-4 md:px-5 pt-4 md:pt-5 pb-4 border-b" style={{ borderColor: "#1f1f1f" }}>
           <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-white/30 mb-3">
             Genre
           </p>
@@ -147,7 +134,7 @@ export default function DiscoverPage() {
           className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x"
           style={{ borderColor: "#1f1f1f" }}
         >
-          <div className="px-5 py-4">
+          <div className="px-4 md:px-5 py-4">
             <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-white/30 mb-3">
               Release Year
             </p>
@@ -160,7 +147,7 @@ export default function DiscoverPage() {
             />
           </div>
 
-          <div className="px-5 py-4">
+          <div className="px-4 md:px-5 py-4">
             <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-white/30 mb-3">
               Minimum Rating
             </p>
@@ -217,8 +204,7 @@ export default function DiscoverPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mt-4">
-          {" "}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 mt-4 [&>*]:w-full [&>*]:h-auto [&>*]:aspect-[2/3]">
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}

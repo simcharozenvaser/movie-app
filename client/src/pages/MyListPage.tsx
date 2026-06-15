@@ -22,16 +22,10 @@ export default function MyListPage() {
   useEffect(() => {
     async function load() {
       const ids = list.map((i) => i.movieId);
-
-      if (!ids.length) {
-        setMovies([]);
-        return;
-      }
-
+      if (!ids.length) { setMovies([]); return; }
       const data = await getMoviesByIds(ids);
       setMovies(data);
     }
-
     load();
   }, [idsKey]);
 
@@ -41,7 +35,6 @@ export default function MyListPage() {
 
   const filteredMovies = useMemo(() => {
     if (filter === "all") return movies;
-
     return movies.filter((m) => {
       const item = itemMap.get(m.id);
       return item?.status === filter;
@@ -61,14 +54,14 @@ export default function MyListPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-1">
 
-      <h1 className="text-3xl font-bold">
+      <h1 className="text-2xl md:text-3xl font-bold">
         🎬 My List ({movies.length})
       </h1>
 
       {/* FILTERS */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {FILTERS.map((f) => (
           <button
             key={f}
@@ -79,17 +72,13 @@ export default function MyListPage() {
                 : "bg-gray-800 text-white hover:bg-gray-700"
             }`}
           >
-            {f === "all"
-              ? "All"
-              : f === "watched"
-              ? "Watched"
-              : "Want"}
+            {f === "all" ? "All" : f === "watched" ? "Watched" : "Want"}
           </button>
         ))}
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-8">
         {filteredMovies.map((movie) => (
           <MyListMovieCard
             key={movie.id}
