@@ -12,7 +12,10 @@ app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: [
+      process.env.CLIENT_URL,
+      "http://localhost:8080",
+    ],
     credentials: true,
   })
 );
