@@ -2,7 +2,18 @@ services:
   server:
     build:
       context: ./server
+      dockerfile: Dockerfile
     ports:
       - "3001:3001"
     env_file:
       - ./server/.env
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: https://movie-app-rwxp.onrender.com
+        VITE_TMDB_API_KEY: ${VITE_TMDB_API_KEY}
+    ports:
+      - "8080:80"
